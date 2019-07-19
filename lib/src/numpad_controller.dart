@@ -1,17 +1,24 @@
 import 'package:flutter/foundation.dart';
 
-import 'numpad_format.dart';
-
+import 'formatting/formatter.dart';
 
 typedef ValidInputCallback = void Function(bool);
 
 class NumpadController with ChangeNotifier {
+  final NumpadFormat format;
+
   int rawNumber;
   String rawString;
+  String hintText;
+
   String _formattedString;
 
-  NumpadFormat format;
-  String hintText;
+  set formattedString(String value) {
+    _formattedString = value ?? hintText ?? defaultHintText;
+    notifyListeners();
+  }
+
+  get formattedString => _formattedString;
 
   bool inputValid;
   ValidInputCallback onInputValidChange;
@@ -29,7 +36,7 @@ class NumpadController with ChangeNotifier {
   String defaultHintText;
 
   NumpadController(
-      {@required this.format, this.hintText, this.onInputValidChange}) {
+      {this.format = NumpadFormat.NONE, this.hintText, this.onInputValidChange}) {
     switch (format) {
       case NumpadFormat.NONE:
         defaultHintText = 'Enter Number';
@@ -51,12 +58,7 @@ class NumpadController with ChangeNotifier {
     _formattedString = hintText ?? defaultHintText;
   }
 
-  set formattedString(String value) {
-    _formattedString = value ?? hintText ?? defaultHintText;
-    notifyListeners();
-  }
 
-  get formattedString => _formattedString;
 
   void parseInput(int input) {
     switch (input) {
@@ -105,20 +107,7 @@ class NumpadController with ChangeNotifier {
       formattedString = null;
     } else {
       rawNumber = num.tryParse(rawString);
-      switch (format) {
-        case NumpadFormat.NONE:
-          formattedString = rawString;
-          break;
-        case NumpadFormat.CURRENCY:
-          // formattedString = Convert.numberStringToDollarString(rawString);
-          break;
-        case NumpadFormat.PHONE:
-          // formattedString = Convert.numberStringToPhoneNumber(rawString);
-          break;
-        case NumpadFormat.PIN4:
-          // formattedString = Convert.pinToObfuscated(rawString);
-          break;
-      }
+      formattedString = formatRawString(rawString, format);
     }
   }
 

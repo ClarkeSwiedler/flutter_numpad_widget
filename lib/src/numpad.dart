@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'numpad_controller.dart';
-import 'formatter.dart';
 
 class Numpad extends StatelessWidget {
   final double innerPadding;
@@ -27,7 +26,7 @@ class Numpad extends StatelessWidget {
     return EdgeInsets.all(innerPadding);
   }
 
-  Widget numButton({BuildContext context, int displayNum, Icon icon}) {
+  Widget _numButton({BuildContext context, int displayNum, Icon icon}) {
     Widget effectiveChild;
     int passNum = displayNum;
     if (icon != null) {
@@ -54,28 +53,28 @@ class Numpad extends StatelessWidget {
     );
   }
 
-  Widget numRow(BuildContext context, List<int> numbers) {
+  Widget _buildNumRow(BuildContext context, List<int> numbers) {
+    List<Widget> buttonList = numbers
+        .map((buttonNum) => _numButton(context: context, displayNum: buttonNum))
+        .toList();
     return Container(
       child: Expanded(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            for (var n in numbers) numButton(context: context, displayNum: n)
-          ],
-        ),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: buttonList),
       ),
     );
   }
 
-  Widget specialRow(BuildContext context) {
+  Widget _buildSpecialRow(BuildContext context) {
     return Expanded(
       child: Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            numButton(
+            _numButton(
                 context: context,
                 displayNum: -1,
                 icon: Icon(
@@ -83,8 +82,8 @@ class Numpad extends StatelessWidget {
                   color: Colors.white,
                   size: buttonTextSize,
                 )),
-            numButton(context: context, displayNum: 0),
-            numButton(
+            _numButton(context: context, displayNum: 0),
+            _numButton(
                 context: context,
                 displayNum: -2,
                 icon: Icon(
@@ -97,8 +96,6 @@ class Numpad extends StatelessWidget {
       ),
     );
   }
-
-  final logger = _NumpadLogger();
 
   Widget _buildNumPad(BuildContext context, BoxConstraints constraints) {
     return Container(
@@ -113,10 +110,10 @@ class Numpad extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            numRow(context, [1, 2, 3]),
-            numRow(context, [4, 5, 6]),
-            numRow(context, [7, 8, 9]),
-            specialRow(context)
+            _buildNumRow(context, [1, 2, 3]),
+            _buildNumRow(context, [4, 5, 6]),
+            _buildNumRow(context, [7, 8, 9]),
+            _buildSpecialRow(context)
           ],
         ),
       ),
@@ -128,16 +125,5 @@ class Numpad extends StatelessWidget {
     return LayoutBuilder(
       builder: _buildNumPad,
     );
-  }
-}
-
-class _NumpadLogger {
-  bool hasLoggedBuild = false;
-
-  printConstraints(BoxConstraints constraints) {
-    if (hasLoggedBuild) return;
-    print(
-        'Constraints: max height = ${constraints.maxHeight}, max width = ${constraints.maxWidth}');
-    hasLoggedBuild = true;
   }
 }
