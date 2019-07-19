@@ -84,7 +84,8 @@ class _NumpadTextState extends State<NumpadText>
   TextStyle _getTextStyle() {
     TextStyle style = TextStyle(
         fontFamily: 'RobotoMono', color: isInvalid ? Colors.red : null);
-    return widget.style?.merge(style);
+//    return widget.style?.merge(style);
+  return style;
   }
 
   @override

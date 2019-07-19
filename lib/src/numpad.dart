@@ -35,7 +35,7 @@ class Numpad extends StatelessWidget {
       effectiveChild = Text(
         displayNum.toString(),
         style: TextStyle(
-            fontSize: buttonTextSize, color: textColor ?? Colors.white),
+            fontSize: buttonTextSize),
       );
     }
     return Expanded(
@@ -79,7 +79,6 @@ class Numpad extends StatelessWidget {
                 displayNum: -1,
                 icon: Icon(
                   Icons.backspace,
-                  color: Colors.white,
                   size: buttonTextSize,
                 )),
             _numButton(context: context, displayNum: 0),
@@ -88,7 +87,6 @@ class Numpad extends StatelessWidget {
                 displayNum: -2,
                 icon: Icon(
                   Icons.clear,
-                  color: Colors.white,
                   size: buttonTextSize,
                 )),
           ],
