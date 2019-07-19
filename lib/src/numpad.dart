@@ -43,9 +43,9 @@ class Numpad extends StatelessWidget {
         padding: buttonPadding(),
         child: RaisedButton(
           child: effectiveChild,
-          color: buttonColor ??
-//              Theme.of(context).buttonTheme?.colorScheme ??
-              Theme.of(context).buttonColor,
+//          color: buttonColor ??
+////              Theme.of(context).buttonTheme?.colorScheme ??
+//              Theme.of(context).buttonColor,
           onPressed: () => controller.parseInput(passNum),
 //          padding: padding,
         ),

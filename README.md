@@ -1,14 +1,31 @@
 # flutter_numpad_widget
 
-A new Flutter package project.
+A set of Flutter widgets providing numpad input functionality without the soft keyboard.
+
+
 
 ## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+In your Flutter project add the dependency:
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```
+dependencies:
+    ...
+    flutter_numpad_widget: 0.0.1
+```
+
+## Usage Example
+Import ```flutter_numpad_widget```
+```
+import 'package:flutter_numpad_widget/flutter_numpad_widget.dart'
+```
+### Numpad Only
+
+You can use the Numpad widget without it's associated text widget or formatting.
+
+In this scenario, you just create a NumpadController and pass it to your Numpad.
+The controller will send a notification when its contents have changed.
+
+```dart
+
+```
