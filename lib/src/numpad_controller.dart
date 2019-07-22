@@ -4,6 +4,7 @@ import 'formatting/formatter.dart';
 
 typedef ValidInputCallback = void Function(bool);
 
+///
 class NumpadController with ChangeNotifier {
   final NumpadFormat format;
 

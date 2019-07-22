@@ -1,5 +1,7 @@
-
-
+///This library aims to provide a straightforward, configurable number pad 
+///widget.
+///
+///The [Numpad] can be used alone
 
 library flutter_numpad_widget;
 
