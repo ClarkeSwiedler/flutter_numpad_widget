@@ -1,8 +1,8 @@
 name: flutter_numpad_widget
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: A set of widgets that provide numpad input and formatted display of that input.
+version: 0.1.0
+author: Clarke Swiedler
+homepage: https://github.com/ClarkeSwiedler/flutter_numpad_widget
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
