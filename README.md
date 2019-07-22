@@ -61,7 +61,7 @@ It is also possible to use the Numpad on its own, and respond to user input by a
 
 ```dart
 class NumpadOnlyExample extends StatelessWidget {
-  final _controller = NumpadController()
+  final _controller = NumpadController();
 
   NumpadOnlyExample() {
     this._controller.addListener(_controllerListener);

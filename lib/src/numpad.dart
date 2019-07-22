@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'numpad_controller.dart';
 
+///A grid of evenly spaced buttons with the numbers 0 through 9, as well as
+///back and clear buttons.
+///
+/// Requires a [NumpadController], which is responsible for parsing and storing
+/// this input from this widget.
 class Numpad extends StatelessWidget {
+
+  ///Space between buttons on the numpad grid.
   final double innerPadding;
+  ///Size of the text on the buttons in the numpad grid.
   final double buttonTextSize;
   final Color buttonColor;
   final Color textColor;
@@ -26,7 +34,7 @@ class Numpad extends StatelessWidget {
     return EdgeInsets.all(innerPadding);
   }
 
-  Widget _numButton({BuildContext context, int displayNum, Icon icon}) {
+  Widget _buildNumButton({BuildContext context, int displayNum, Icon icon}) {
     Widget effectiveChild;
     int passNum = displayNum;
     if (icon != null) {
@@ -55,7 +63,7 @@ class Numpad extends StatelessWidget {
 
   Widget _buildNumRow(BuildContext context, List<int> numbers) {
     List<Widget> buttonList = numbers
-        .map((buttonNum) => _numButton(context: context, displayNum: buttonNum))
+        .map((buttonNum) => _buildNumButton(context: context, displayNum: buttonNum))
         .toList();
     return Container(
       child: Expanded(
@@ -74,15 +82,15 @@ class Numpad extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            _numButton(
+            _buildNumButton(
                 context: context,
                 displayNum: -1,
                 icon: Icon(
                   Icons.backspace,
                   size: buttonTextSize,
                 )),
-            _numButton(context: context, displayNum: 0),
-            _numButton(
+            _buildNumButton(context: context, displayNum: 0),
+            _buildNumButton(
                 context: context,
                 displayNum: -2,
                 icon: Icon(

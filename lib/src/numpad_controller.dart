@@ -4,37 +4,69 @@ import 'formatting/formatter.dart';
 
 typedef ValidInputCallback = void Function(bool);
 
-///
+///A controller that holds the current state of a Numpad, provides notifications
+///when that state is updated via user input, and allows programmatic control
+///of clearing text and raising errors.
 class NumpadController with ChangeNotifier {
   final NumpadFormat format;
 
-  int rawNumber;
-  String rawString;
+  ///The maximum number of digits a user is allowed to enter based on the
+  ///[NumpadFormat] used with this controller.
+  int maxRawLength;
+
+  ///Optional text to be shown when the controller has not received any input,
+  ///or after the input has been cleared.
   String hintText;
+
+  ///The hint text that will be shown if [hintText] is null, based on the
+  ///[NumpadFormat] used with this controller.
+  String defaultHintText;
+
+  ///Simple validation. True if [rawString.length] is equal to [maxRawLength].
+  bool inputValid;
+
+  int _rawNumber;
+  get rawNumber => _rawNumber;
+
+  String _rawString;
+  get rawString => _rawString;
 
   String _formattedString;
 
-  set formattedString(String value) {
+  _setFormattedString(String value) {
     _formattedString = value ?? hintText ?? defaultHintText;
     notifyListeners();
   }
 
   get formattedString => _formattedString;
 
-  bool inputValid;
+  ///Called only when [inputValid] changes value. Used, for instance, to show
+  ///or hide a 'Confirm' button based on complete input. For example:
+  ///
+  ///```dart
+  /// //...
+  ///class MyWidgetState extends State<MyWidget> {
+  ///   bool _confirmEnabled = false;
+  ///   final _controller = NumpadController(
+  ///     format: NumpadFormat.PHONE,
+  ///     onInputValidChange: (bool valid) => setState((){_confirmEnabled = valid;})
+  ///   );
+  ///}
+  /// //...
+  ///```
   ValidInputCallback onInputValidChange;
-  VoidCallback onErrorResetRequest;
 
-  void notifyErrorResetListener() {
-    onErrorResetRequest?.call();
-  }
+  VoidCallback _onErrorResetRequest;
 
   void setErrorResetListener(VoidCallback listener) {
-    this.onErrorResetRequest = listener;
+    this._onErrorResetRequest = listener;
   }
 
-  int maxRawLength;
-  String defaultHintText;
+  ///Can be called when business logic deems the [Numpad] input invalid. Used
+  ///in conjunction with the [animateError] option on [NumpadText].
+  void notifyErrorResetListener() {
+    _onErrorResetRequest?.call();
+  }
 
   NumpadController(
       {this.format = NumpadFormat.NONE, this.hintText, this.onInputValidChange}) {
@@ -59,22 +91,20 @@ class NumpadController with ChangeNotifier {
     _formattedString = hintText ?? defaultHintText;
   }
 
-
-
   void parseInput(int input) {
     switch (input) {
       case -2: //Clear
-        rawString = null;
+        _rawString = null;
         if (inputValid == true) {
           inputValid = false;
           onInputValidChange?.call(inputValid);
         }
         break;
       case -1: //Backspace
-        if (rawString != null && rawString.length > 1) {
-          rawString = rawString.substring(0, rawString.length - 1);
+        if (_rawString != null && _rawString.length > 1) {
+          _rawString = _rawString.substring(0, _rawString.length - 1);
         } else {
-          rawString = null;
+          _rawString = null;
         }
         if (inputValid == true) {
           inputValid = false;
@@ -82,10 +112,10 @@ class NumpadController with ChangeNotifier {
         }
         break;
       default:
-        if (rawString != null) {
-          if (rawString.length < maxRawLength) {
-            rawString += input.toString();
-            if (rawString.length == maxRawLength &&
+        if (_rawString != null) {
+          if (_rawString.length < maxRawLength) {
+            _rawString += input.toString();
+            if (_rawString.length == maxRawLength &&
                 format != NumpadFormat.CURRENCY) {
               inputValid = true;
               onInputValidChange?.call(inputValid);
@@ -95,7 +125,7 @@ class NumpadController with ChangeNotifier {
           if (input == 0 && format == NumpadFormat.CURRENCY) {
             break;
           }
-          rawString = input.toString();
+          _rawString = input.toString();
           if (format == NumpadFormat.CURRENCY) {
             inputValid = true;
             onInputValidChange?.call(inputValid);
@@ -103,18 +133,18 @@ class NumpadController with ChangeNotifier {
         }
         break;
     }
-    if (rawString == null) {
-      rawNumber = null;
-      formattedString = null;
+    if (_rawString == null) {
+      _rawNumber = null;
+      _setFormattedString(null);
     } else {
-      rawNumber = num.tryParse(rawString);
-      formattedString = formatRawString(rawString, format);
+      _rawNumber = num.tryParse(_rawString);
+      _setFormattedString(formatRawString(_rawString, format));
     }
   }
 
   void clear() {
-    rawNumber = null;
-    rawString = null;
+    _rawNumber = null;
+    _rawString = null;
     _formattedString = hintText ?? defaultHintText;
     notifyListeners();
   }
