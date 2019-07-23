@@ -1,3 +1,7 @@
-## [0.0.1] - TODO: Add release date.
+## [0.1.0] July 22, 2019
 
-* TODO: Describe initial release.
+Initial release of flutter_numpad_widget includes:
+
+ - Numpad input widget
+ - NumpadText display widget
+ - NumpadController control widget

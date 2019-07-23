@@ -1,7 +1,7 @@
 name: flutter_numpad_widget
 description: A set of widgets that provide numpad input and formatted display of that input.
 version: 0.1.0
-author: Clarke Swiedler
+author: A. Clarke Swiedler <Clarke@swiedler.com>
 homepage: https://github.com/ClarkeSwiedler/flutter_numpad_widget
 
 environment:
