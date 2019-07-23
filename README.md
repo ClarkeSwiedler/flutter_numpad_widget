@@ -77,7 +77,7 @@ class NumpadOnlyExample extends StatelessWidget {
   }
 }
 ```
-The NumpadController exposes a ```rawString```, ```rawNumber```, and ```formattedString``` as members.
+The NumpadController exposes a ```rawString```, ```rawNumber```, and ```formattedString```.
 
 
 ## Feature Overview

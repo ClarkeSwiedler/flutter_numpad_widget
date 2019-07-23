@@ -26,7 +26,6 @@ import 'numpad_controller.dart';
 /// }
 /// ```
 class NumpadText extends StatefulWidget {
-
   ///The [NumpadController] this NumpadText shares with its parent Numpad.
   final NumpadController controller;
 
@@ -35,15 +34,18 @@ class NumpadText extends StatefulWidget {
   final TextAlign textAlign;
 
   ///If true, the text will turn red, play a shaking animation, and clear itself
-  ///when [NumpadController.notifyErrorResetListener] is called on the
-  ///[NumpadController] associated with this [NumpadText].
+  ///when [NumpadController.notifyErrorResetListener] is called on [controller].
   final bool animateError;
+
+  ///The color to apply to the text when the error animation is playing.
+  final Color errorColor;
 
   NumpadText({
     @required this.controller,
     this.style,
     this.textAlign = TextAlign.center,
     this.animateError = false,
+    this.errorColor = Colors.red,
   });
 
   @override
@@ -52,39 +54,33 @@ class NumpadText extends StatefulWidget {
 
 class _NumpadTextState extends State<NumpadText>
     with SingleTickerProviderStateMixin {
-
   ///The text being currently displayed by this widget.
   String displayedText;
 
-  ///Text will be [Colors.red] when this is true.
-  bool isInvalid = false;
-
   NumpadController _controller;
+
   AnimationController _errorAnimator;
   Animation _errorAnimation;
-
-  ///Keeps track of the number of times the [_errorAnimator] has cycled.
-  var errorShakes = 0;
-
-  ///Total number of times the text should wiggle back and forth on error.
-  final totalErrorShakes = 3;
+  final _totalErrorShakes = 3;
+  var _errorShakes = 0;
+  bool _isErrorColor = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller;
+    _controller = widget.controller
+      ..addListener(_listener)
+      ..setErrorResetListener(_handleError);
+
     displayedText = _controller.formattedString;
-    _controller.addListener(_listener);
-    _controller.setErrorResetListener(_handleError);
 
     _errorAnimator = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 100));
+        vsync: this, duration: const Duration(milliseconds: 100))
+      ..addStatusListener(_errorAnimationStatusListener);
 
     _errorAnimation =
         Tween<Offset>(begin: const Offset(0, 0), end: const Offset(0.2, 0))
             .animate(_errorAnimator);
-
-    _errorAnimator.addStatusListener(_errorAnimationStatusListener);
   }
 
   void _listener() {
@@ -94,10 +90,14 @@ class _NumpadTextState extends State<NumpadText>
   }
 
   void _handleError() {
-    setState(() {
-      isInvalid = true;
-    });
-    _errorAnimator.forward();
+    if (widget.animateError) {
+      setState(() {
+        _isErrorColor = true;
+      });
+      _errorAnimator.forward();
+    } else {
+      _controller.clear();
+    }
   }
 
   void _errorAnimationStatusListener(AnimationStatus status) {
@@ -105,12 +105,12 @@ class _NumpadTextState extends State<NumpadText>
       _errorAnimator.reverse();
     }
     if (status == AnimationStatus.dismissed) {
-      errorShakes += 1;
-      if (errorShakes < totalErrorShakes) {
+      _errorShakes += 1;
+      if (_errorShakes < _totalErrorShakes) {
         _errorAnimator.forward();
       } else {
-        errorShakes = 0;
-        isInvalid = false;
+        _errorShakes = 0;
+        _isErrorColor = false;
         _controller.clear();
       }
     }
@@ -118,7 +118,7 @@ class _NumpadTextState extends State<NumpadText>
 
   TextStyle _getTextStyle() {
     TextStyle style = TextStyle(
-        fontFamily: 'RobotoMono', color: isInvalid ? Colors.red : null);
+        fontFamily: 'RobotoMono', color: _isErrorColor ? Colors.red : null);
     return widget.style?.merge(style);
   }
 

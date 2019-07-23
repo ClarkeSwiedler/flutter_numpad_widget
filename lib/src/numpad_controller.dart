@@ -69,7 +69,9 @@ class NumpadController with ChangeNotifier {
   }
 
   NumpadController(
-      {this.format = NumpadFormat.NONE, this.hintText, this.onInputValidChange}) {
+      {this.format = NumpadFormat.NONE,
+      this.hintText,
+      this.onInputValidChange}) {
     switch (format) {
       case NumpadFormat.NONE:
         defaultHintText = 'Enter Number';
@@ -142,6 +144,7 @@ class NumpadController with ChangeNotifier {
     }
   }
 
+  ///Resets the controller back to its inital state.
   void clear() {
     _rawNumber = null;
     _rawString = null;

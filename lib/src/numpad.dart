@@ -8,9 +8,9 @@ import 'numpad_controller.dart';
 /// Requires a [NumpadController], which is responsible for parsing and storing
 /// this input from this widget.
 class Numpad extends StatelessWidget {
-
   ///Space between buttons on the numpad grid.
   final double innerPadding;
+
   ///Size of the text on the buttons in the numpad grid.
   final double buttonTextSize;
   final Color buttonColor;
@@ -30,7 +30,7 @@ class Numpad extends StatelessWidget {
     this.width = double.infinity,
   }) : super(key: key);
 
-  EdgeInsetsGeometry buttonPadding() {
+  EdgeInsetsGeometry _buttonPadding() {
     return EdgeInsets.all(innerPadding);
   }
 
@@ -42,20 +42,16 @@ class Numpad extends StatelessWidget {
     } else {
       effectiveChild = Text(
         displayNum.toString(),
-        style: TextStyle(
-            fontSize: buttonTextSize),
+        style: TextStyle(fontSize: buttonTextSize, color: textColor),
       );
     }
     return Expanded(
       child: Container(
-        padding: buttonPadding(),
+        padding: _buttonPadding(),
         child: RaisedButton(
           child: effectiveChild,
-//          color: buttonColor ??
-////              Theme.of(context).buttonTheme?.colorScheme ??
-//              Theme.of(context).buttonColor,
+          color: buttonColor,
           onPressed: () => controller.parseInput(passNum),
-//          padding: padding,
         ),
       ),
     );
@@ -63,7 +59,8 @@ class Numpad extends StatelessWidget {
 
   Widget _buildNumRow(BuildContext context, List<int> numbers) {
     List<Widget> buttonList = numbers
-        .map((buttonNum) => _buildNumButton(context: context, displayNum: buttonNum))
+        .map((buttonNum) =>
+            _buildNumButton(context: context, displayNum: buttonNum))
         .toList();
     return Container(
       child: Expanded(
@@ -107,7 +104,7 @@ class Numpad extends StatelessWidget {
     return Container(
       height: height,
       width: width,
-      padding: buttonPadding(),
+      padding: _buttonPadding(),
       child: LimitedBox(
         maxHeight: 500,
         maxWidth: 300,
