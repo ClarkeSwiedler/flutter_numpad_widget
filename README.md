@@ -2,7 +2,7 @@
 
 A set of Flutter widgets providing numpad input functionality without the soft keyboard.
 
-
+![Example Screenshot](../assets/numpad_example.png)
 
 ## Getting Started
 
