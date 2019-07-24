@@ -8,13 +8,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Numpad Example',
-      theme: ThemeData(
-          primarySwatch: Colors.amber,
-          buttonTheme: ButtonThemeData(
-              textTheme: ButtonTextTheme.normal,
-              buttonColor: Colors.blueGrey[300],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30))))),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: FormattedNumpadExample(),
     );
   }
