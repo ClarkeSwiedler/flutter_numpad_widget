@@ -42,7 +42,9 @@ class Numpad extends StatelessWidget {
     int passNum = displayNum;
     if (icon != null) {
       effectiveChild = icon;
-      icon.icon == Icons.backspace;
+
+      /// button text to be displayed based on the icons provided.
+      /// if customButton is not null.
       icon.icon.codePoint == 57676 ? buttonString = "X" : buttonString = "<-";
     } else {
       effectiveChild = Text(
@@ -50,20 +52,18 @@ class Numpad extends StatelessWidget {
         style: TextStyle(fontSize: buttonTextSize, color: textColor),
       );
     }
-
-    Widget button =
-        getButton(buttonString, effectiveChild, buttonColor, passNum);
     return Expanded(
-      child: button,
+      child: getButton(buttonString, effectiveChild, buttonColor, passNum),
     );
   }
 
+  /// function to provide the button based on customButton() provided.
   Widget getButton(String buttonString, Widget effectiveChild,
       Color buttonColor, int passNum) {
     Widget button;
     if (customButton == null) {
       button = Container(
-        // padding: _buttonPadding(),
+        padding: _buttonPadding(),
         child: RaisedButton(
           child: effectiveChild,
           color: buttonColor,
