@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
 import 'numpad_controller.dart';
 
@@ -18,10 +19,11 @@ class Numpad extends StatelessWidget {
   final double height;
   final double width;
   final NumpadController controller;
-
+  final Function customButton;
   Numpad({
     Key key,
     @required this.controller,
+    this.customButton,
     this.buttonColor,
     this.textColor,
     this.innerPadding = 4,
@@ -35,10 +37,15 @@ class Numpad extends StatelessWidget {
   }
 
   Widget _buildNumButton({BuildContext context, int displayNum, Icon icon}) {
+    String buttonString = displayNum.toString();
     Widget effectiveChild;
     int passNum = displayNum;
     if (icon != null) {
       effectiveChild = icon;
+
+      /// button text to be displayed based on the icons provided.
+      /// if customButton is not null.
+      icon.icon.codePoint == 57676 ? buttonString = "X" : buttonString = "<-";
     } else {
       effectiveChild = Text(
         displayNum.toString(),
@@ -46,15 +53,31 @@ class Numpad extends StatelessWidget {
       );
     }
     return Expanded(
-      child: Container(
+      child: getButton(buttonString, effectiveChild, buttonColor, passNum),
+    );
+  }
+
+  /// function to provide the button based on customButton() provided.
+  Widget getButton(String buttonString, Widget effectiveChild,
+      Color buttonColor, int passNum) {
+    Widget button;
+    if (customButton == null) {
+      button = Container(
         padding: _buttonPadding(),
         child: RaisedButton(
           child: effectiveChild,
           color: buttonColor,
           onPressed: () => controller.parseInput(passNum),
         ),
-      ),
-    );
+      );
+    } else {
+      button = MaterialButton(
+        padding: _buttonPadding(),
+        onPressed: () => controller.parseInput(passNum),
+        child: customButton(buttonString),
+      );
+    }
+    return button;
   }
 
   Widget _buildNumRow(BuildContext context, List<int> numbers) {
