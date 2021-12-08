@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'formatting/formatter.dart';
 
-typedef ValidInputCallback = void Function(bool);
+typedef ValidInputCallback = void Function(bool?);
 
 ///A controller that holds the current state of a Numpad, provides notifications
 ///when that state is updated via user input, and allows programmatic control
@@ -12,28 +12,28 @@ class NumpadController with ChangeNotifier {
 
   ///The maximum number of digits a user is allowed to enter based on the
   ///[NumpadFormat] used with this controller.
-  int maxRawLength;
+  int? maxRawLength;
 
   ///Optional text to be shown when the controller has not received any input,
   ///or after the input has been cleared.
-  String hintText;
+  String? hintText;
 
   ///The hint text that will be shown if [hintText] is null, based on the
   ///[NumpadFormat] used with this controller.
-  String defaultHintText;
+  String? defaultHintText;
 
   ///Simple validation. True if [rawString.length] is equal to [maxRawLength].
-  bool inputValid;
+  bool? inputValid;
 
-  int _rawNumber;
+  int? _rawNumber;
   get rawNumber => _rawNumber;
 
-  String _rawString;
+  late String _rawString;
   get rawString => _rawString;
 
-  String _formattedString;
+  String? _formattedString;
 
-  _setFormattedString(String value) {
+  _setFormattedString(String? value) {
     _formattedString = value ?? hintText ?? defaultHintText;
     notifyListeners();
   }
@@ -54,9 +54,9 @@ class NumpadController with ChangeNotifier {
   ///}
   /// //...
   ///```
-  ValidInputCallback onInputValidChange;
+  ValidInputCallback? onInputValidChange;
 
-  VoidCallback _onErrorResetRequest;
+  VoidCallback? _onErrorResetRequest;
 
   void setErrorResetListener(VoidCallback listener) {
     this._onErrorResetRequest = listener;
@@ -93,20 +93,20 @@ class NumpadController with ChangeNotifier {
     _formattedString = hintText ?? defaultHintText;
   }
 
-  void parseInput(int input) {
+  void parseInput(int? input) {
     switch (input) {
       case -2: //Clear
-        _rawString = null;
+        _rawString = "";
         if (inputValid == true) {
           inputValid = false;
           onInputValidChange?.call(inputValid);
         }
         break;
       case -1: //Backspace
-        if (_rawString != null && _rawString.length > 1) {
+        if (_rawString is String && _rawString.length > 1) {
           _rawString = _rawString.substring(0, _rawString.length - 1);
         } else {
-          _rawString = null;
+          _rawString = "";
         }
         if (inputValid == true) {
           inputValid = false;
@@ -114,8 +114,8 @@ class NumpadController with ChangeNotifier {
         }
         break;
       default:
-        if (_rawString != null) {
-          if (_rawString.length < maxRawLength) {
+        if (_rawString is String) {
+          if (_rawString.length < maxRawLength!) {
             _rawString += input.toString();
             if (_rawString.length == maxRawLength &&
                 format != NumpadFormat.CURRENCY) {
@@ -135,11 +135,11 @@ class NumpadController with ChangeNotifier {
         }
         break;
     }
-    if (_rawString == null) {
+    if (_rawString.isEmpty) {
       _rawNumber = null;
       _setFormattedString(null);
     } else {
-      _rawNumber = num.tryParse(_rawString);
+      _rawNumber = num.tryParse(_rawString) as int?;
       _setFormattedString(formatRawString(_rawString, format));
     }
   }
@@ -147,7 +147,7 @@ class NumpadController with ChangeNotifier {
   ///Resets the controller back to its inital state.
   void clear() {
     _rawNumber = null;
-    _rawString = null;
+    _rawString = "";
     _formattedString = hintText ?? defaultHintText;
     notifyListeners();
   }

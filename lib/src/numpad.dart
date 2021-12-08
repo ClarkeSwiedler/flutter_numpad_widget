@@ -13,15 +13,15 @@ class Numpad extends StatelessWidget {
 
   ///Size of the text on the buttons in the numpad grid.
   final double buttonTextSize;
-  final Color buttonColor;
-  final Color textColor;
+  final Color? buttonColor;
+  final Color? textColor;
   final double height;
   final double width;
   final NumpadController controller;
 
   Numpad({
-    Key key,
-    @required this.controller,
+    Key? key,
+    required this.controller,
     this.buttonColor,
     this.textColor,
     this.innerPadding = 4,
@@ -34,9 +34,9 @@ class Numpad extends StatelessWidget {
     return EdgeInsets.all(innerPadding);
   }
 
-  Widget _buildNumButton({BuildContext context, int displayNum, Icon icon}) {
+  Widget _buildNumButton({BuildContext? context, int? displayNum, Icon? icon}) {
     Widget effectiveChild;
-    int passNum = displayNum;
+    int? passNum = displayNum;
     if (icon != null) {
       effectiveChild = icon;
     } else {
@@ -45,12 +45,14 @@ class Numpad extends StatelessWidget {
         style: TextStyle(fontSize: buttonTextSize, color: textColor),
       );
     }
+    final ButtonStyle _buttonStyle =
+        ElevatedButton.styleFrom(primary: buttonColor);
     return Expanded(
       child: Container(
         padding: _buttonPadding(),
-        child: RaisedButton(
+        child: ElevatedButton(
           child: effectiveChild,
-          color: buttonColor,
+          style: _buttonStyle,
           onPressed: () => controller.parseInput(passNum),
         ),
       ),

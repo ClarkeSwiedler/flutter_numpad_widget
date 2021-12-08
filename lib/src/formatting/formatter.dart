@@ -2,10 +2,10 @@ import 'numpad_format.dart';
 
 export 'numpad_format.dart';
 
-String formatRawString(String rawString, NumpadFormat format) {
+String? formatRawString(String? rawString, NumpadFormat format) {
   switch (format) {
     case NumpadFormat.CURRENCY:
-      return _numberStringToDollarString(rawString);
+      return _numberStringToDollarString(rawString!);
     case NumpadFormat.PHONE:
       return _numberStringToPhoneNumber(rawString);
     case NumpadFormat.PIN4:
@@ -24,7 +24,7 @@ String _numberStringToDollarString(String valueString) {
   return dollarString;
 }
 
-String _numberStringToPhoneNumber(String phone) {
+String? _numberStringToPhoneNumber(String? phone) {
   if (phone == null) {
     return null;
   }
@@ -38,7 +38,7 @@ String _numberStringToPhoneNumber(String phone) {
   return formatted;
 }
 
-String _pinToObfuscated(String pin) {
+String? _pinToObfuscated(String? pin) {
   if (pin == null) {
     return null;
   }
